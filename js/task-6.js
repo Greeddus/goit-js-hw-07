@@ -4,44 +4,44 @@ function getRandomHexColor() {
     .padStart(6, 0)}`;
 }
 
-const controlsDiv = document.querySelector("#controls");
-const input = controlsDiv.querySelector("input");
-const createButton = controlsDiv.querySelector("[data-create]");
-const destroyButton = controlsDiv.querySelector("[data-destroy]");
-const boxesDiv = document.querySelector("#boxes");
-
 function createBoxes(amount) {
-  boxesDiv.innerHTML = "";
+  const boxesContainer = document.getElementById("boxes");
+  boxesContainer.innerHTML = "";
 
-  let size = 30;
+  const fragment = document.createDocumentFragment();
+  const baseSize = 30;
+  const sizeIncrement = 10;
 
   for (let i = 0; i < amount; i++) {
     const box = document.createElement("div");
-    box.style.width = `${size}px`;
-    box.style.height = `${size}px`;
+    box.style.width = `${baseSize + i * sizeIncrement}px`;
+    box.style.height = `${baseSize + i * sizeIncrement}px`;
     box.style.backgroundColor = getRandomHexColor();
-
-    boxesDiv.appendChild(box);
-
-    size += 10;
+    fragment.appendChild(box);
   }
+
+  boxesContainer.appendChild(fragment);
 }
 
 function destroyBoxes() {
-  boxesDiv.innerHTML = "";
+  const boxesContainer = document.getElementById("boxes");
+  boxesContainer.innerHTML = "";
 }
 
-createButton.addEventListener("click", () => {
-  const amount = input.value;
+document.addEventListener("DOMContentLoaded", () => {
+  const input = document.querySelector("#controls input");
+  const createBtn = document.querySelector("button[data-create]");
+  const destroyBtn = document.querySelector("button[data-destroy]");
 
-  if (amount < 1 || amount > 100) {
-    return;
-  }
+  createBtn.addEventListener("click", () => {
+    const amount = parseInt(input.value);
+    if (amount >= 1 && amount <= 100) {
+      createBoxes(amount);
+      input.value = "";
+    }
+  });
 
-  createBoxes(amount);
-  input.value = "";
-});
-
-destroyButton.addEventListener("click", () => {
-  destroyBoxes();
+  destroyBtn.addEventListener("click", () => {
+    destroyBoxes();
+  });
 });
